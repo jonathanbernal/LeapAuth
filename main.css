@@ -1,0 +1,33 @@
+ul {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    font-size : 80px;
+    text-align: center;
+}
+
+body{
+    background-image : url("./images/indexbackground.jpg");
+}
+
+input {
+    text-align: center;
+    font-size : 24px;
+    border-radius : 8px;
+    color: white;
+    background : grey;
+    border : none;
+    padding: 12px 20px;
+    width: 400px;
+    float: left;
+    margin: 100px 30px;
+}
+
+div{
+    margin: 30px 200px;
+}
+
+

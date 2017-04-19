@@ -1,0 +1,48 @@
+ul {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    font-size : 75px;
+    text-align: Center;
+}
+h3{
+    font-family: 'Roboto', sans-serif;
+    color:white;
+    font-size : 20px;
+}
+
+div{
+    font-family: 'Roboto', sans-serif;
+    color:white;
+    font-size : 15px;
+}
+
+body{
+    background-image : url("./images/back.jpg");
+    background-size: cover;
+}
+
+input {
+    font-size : 24px;
+    border-radius : 8px;
+    color: black;
+    background : lightgrey;
+    border : none;
+    /*padding: 5px 20px;*/
+    width: 400px;
+    /*margin: 5px 5px;*/
+}
+
+.submit{
+    text-align: center;
+}
+
+p {
+    color: white;
+    font-size: 24px;
+}
+
+
