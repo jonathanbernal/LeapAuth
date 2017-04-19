@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="stylesheets/registrationstyle.css">
+<title>Leap Motion Log In</title>
+<script src="http://js.leapmotion.com/leap-0.6.3.min.js"></script>
+ <link rel="stylesheet" href="leaplogin.css" />
+    <!-- See more examples at developer.leapmotion.com -->
+    <base href="https://editor-leapmotion.netdna-ssl.com/leapmotion-examples/javascript/33bb9af093dab3c51c37279e7f68374b5bc87e57/v2/left-right/index.html.livegit?theme-id=4245&height=600"/>
+    <title>Leap Login</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.js"></script>
+    <script src="//js.leapmotion.com/leap-0.6.2.min.js"></script>
+    <script src="//js.leapmotion.com/leap-plugins-0.1.6.1.js"></script>
+    <script src="//js.leapmotion.com/leap.rigged-hand-0.1.3.min.js"></script>
+       <style>
+      body{
+        font-family: 'Myriad Pro', Helvetica, Arial, 'Lucida Grande', sans-serif;
+        font-size: 24pt;
+        color: white;
+        background-color: #80b865;
+      }
+      label {
+        position: fixed;
+        white-space: nowrap;
+      }
+    </style>
+<script>
+var previousFrame = null;
+var paused = false;
+var pauseOnGesture = false;
+var count = 0;
+var gestureArray = [];
+
+// Setup Leap loop with frame callback function
+var controllerOptions = {enableGestures: true};
+
+// to use HMD mode:
+// controllerOptions.optimizeHMD = true;
+
+Leap.loop(controllerOptions, function(frame) {
+  if (paused) {
+    return; // Skip this update
+  }
+
+  // Display Frame object data
+  var frameOutput = document.getElementById("frameData");
+
+  var frameString = //"Frame ID: " + frame.id  + "<br />"
+                  //+"Timestamp: " + frame.timestamp + " &micro;s<br />"
+                   "Hands: " + frame.hands.length + "<br />"
+                  + "Fingers: " + frame.fingers.length + "<br />"
+                  //+ "Tools: " + frame.tools.length + "<br />"
+                  + "Gestures: " + frame.gestures.length + "<br />";
+
+  // Frame motion factors
+  if (previousFrame && previousFrame.valid) {
+    var translation = frame.translation(previousFrame);
+
+    var rotationAxis = frame.rotationAxis(previousFrame);
+    var rotationAngle = frame.rotationAngle(previousFrame);
+   // frameString += "Rotation axis: " + vectorToString(rotationAxis, 2) + "<br />";
+   // frameString += "Rotation angle: " + rotationAngle.toFixed(2) + " radians<br />";
+
+    var scaleFactor = frame.scaleFactor(previousFrame);
+    //frameString += "Scale factor: " + scaleFactor.toFixed(2) + "<br />";
+  }
+  //frameOutput.innerHTML = "<div style='width:300px; float:left; padding:5px'>" + frameString + "</div>";
+
+  // Display Hand object data
+  var handOutput = document.getElementById("handData");
+  var handString = "";
+  if (frame.hands.length > 0) {
+    for (var i = 0; i < frame.hands.length; i++) {
+      var hand = frame.hands[i];
+
+      handString += "<div style='width:300px; float:left; padding:5px'>";
+     // handString += "Hand ID: " + hand.id + "<br />";
+      handString += "Type: " + hand.type + " hand" + "<br />";
+
+
+      // Hand motion factors
+      if (previousFrame && previousFrame.valid) {
+        var translation = hand.translation(previousFrame);
+        //handString += "Translation: " + vectorToString(translation) + " mm<br />";
+
+        var rotationAxis = hand.rotationAxis(previousFrame, 2);
+        var rotationAngle = hand.rotationAngle(previousFrame);
+       // handString += "Rotation axis: " + vectorToString(rotationAxis) + "<br />";
+       // handString += "Rotation angle: " + rotationAngle.toFixed(2) + " radians<br />";
+
+        var scaleFactor = hand.scaleFactor(previousFrame);
+       // handString += "Scale factor: " + scaleFactor.toFixed(2) + "<br />";
+      }
+
+      // IDs of pointables associated with this hand
+     if (hand.pointables.length > 0) {
+        var fingerIds = [];
+        for (var j = 0; j < hand.pointables.length; j++) {
+          var pointable = hand.pointables[j];
+            fingerIds.push(pointable.id);
+        }
+      }
+
+      handString += "</div>";
+    }
+  }
+  else {
+    handString += "No hands";
+  }
+  //handOutput.innerHTML = handString;
+
+  // Display Gesture object data
+  var gestureOutput = document.getElementById("gestureData");
+  var gestureString = "";
+  if (frame.gestures.length == 1 ) {
+    //count++;
+    if (pauseOnGesture) {
+      togglePause();
+    }
+    for (var i = 0; i < frame.gestures.length; i++) {
+      var gesture = frame.gestures[i];
+      gestureString +=  "Gesture: " + gesture.type + ", ";
+                                
+      switch (gesture.type) {
+        case "circle":
+      
+              if (confirm("You have entered a Circle as your gesture. Press OK if this is correct or Cancel to try again")==true)
+              {
+                   count++;
+                    gestureArray.push(1); 
+              }                          
+              break;
+        case "swipe":
+ 
+              if (confirm("You have entered a Swipe as your gesture. Press OK if this is correct or Cancel to try again")==true)
+              {
+                   count++;
+                   gestureArray.push(2);
+              }
+              break;
+        case "screenTap":
+             if (confirm("You have entered a ScreenTap as your gesture. Press OK if this is correct or Cancel to try again")==true)
+              {
+                   count++;
+                   gestureArray.push(3);
+              }        
+             break;
+        case "keyTap":
+           if (confirm("You have entered a KeyTap as your gesture. Press OK if this is correct or Cancel to try again")==true)
+              { 
+                   count++;
+                   gestureArray.push(4);
+              }           
+          break;
+        default:
+          gestureString += "unkown gesture type";
+      }
+
+      for(var i=0; i< count; i++ ){
+          gestureString += gestureArray[i];
+      }
+      gestureString += "<br />";
+    }
+  }
+  else {
+    gestureString += "No gestures";
+  }
+    //gestureOutput.innerHTML = gestureString;
+
+  // Store frame for motion functions
+  previousFrame = frame;
+})
+
+function vectorToString(vector, digits) {
+  if (typeof digits === "undefined") {
+    digits = 1;
+  }
+  return "(" + vector[0].toFixed(digits) + ", "
+             + vector[1].toFixed(digits) + ", "
+             + vector[2].toFixed(digits) + ")";
+}
+
+function Done(){
+ 
+  if(count>=5){
+      document.getElementById("done").onclick = window.location.href='file:///c%3A/Users/Luis/Documents/College/Intro%20to%20Security%20of%20Internet%20of%20Things/LeapAuth/LeapAuth/SuccessLogin.html';
+  }else{
+    alert("You need to perform at least 5 gestures before registering to this site");
+  }
+}
+
+function togglePause() {
+ paused = !paused;
+
+      if (paused) {
+      document.getElementById("pause").innerText = "Resume";
+    } else {
+        document.getElementById("pause").innerText = "Pause";
+    }
+  } 
+</script>
+
+</head>
+<body>
+<h1><br>Leap Motion Login</h1>
+<div id="main">
+  <!--<button id="pause" onclick="togglePause()">Pause</button>-->
+  <p style="text-align:center">Place your had over the Leap Motion Controller and draw your gesture</p>
+ <!-- <img src="./images/pic.jpeg" alt="view" style="width:600px;height:228px;"><br><br>-->
+   <button id="done" style="position:absolute;margin-left:550px; margin-top: 200px;  height:67px;width:175px; background-color:greenyellow;border-style: 2px solid line; border-radius:5px;color:#ffffff;font-size:30px;z-index:1;" onclick="Done()"><p id="done" style="text-align:center;margin-top:17px;margin-left:4px;" onclick="Done()">Log In</p></button> 
+  <div id="frameData"></div>
+  <div style="clear:both;"></div>
+  <div id="handData"></div>
+  <div style="clear:both;"></div>
+  <div id="gestureData"></div>
+  
+</div>
+</body>
+ <script type="text/javascript" class="codepen">
+    var riggedHandPlugin;
+    Leap.loop({
+      hand: function(hand){
+        var label = hand.data('label');
+        if (!label){
+          label = document.createElement('label');
+          document.body.appendChild(label);
+         
+          hand.data('label', label)
+        }
+        var handMesh = hand.data('riggedHand.mesh');
+        var screenPosition = handMesh.screenPosition(
+          hand.palmPosition,
+          riggedHandPlugin.camera
+        );
+        label.style.left = screenPosition.x + 'px';
+        label.style.bottom = screenPosition.y + 'px';
+      }
+    })
+    .use('riggedHand')
+    .use('handEntry')
+    .on('handLost', function(hand){
+        var label = hand.data('label');
+        if (label){
+          document.body.removeChild(label);
+          hand.data({label: undefined});
+        }
+    })
+    .use('playback', {
+      recording: './left-or-right-77fps.json.lz',
+      timeBetweenLoops: 1000
+    });
+    riggedHandPlugin = Leap.loopController.plugins.riggedHand;
+  </script>
+</html>
+
